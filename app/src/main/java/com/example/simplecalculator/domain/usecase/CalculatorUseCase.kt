@@ -19,7 +19,10 @@ class CalculatorUseCase {
     }
 
     /**
-     * Выполняет вычисление на основе текущего состояния
+     * Выполняет основное вычисление (сложение, вычитание, умножение, деление).
+     * Берет два числа и операцию из переданного состояния.
+     * Возвращает результат типа BigDecimal для высокой точности.
+     * При попытке деления на ноль выбрасывает ArithmeticException.
      */
     fun calculate(state: CalculatorState): BigDecimal {
         val first = state.firstOperand
@@ -27,6 +30,7 @@ class CalculatorUseCase {
         val operation = state.operation ?: return first
 
         return try {
+            //в зависимости от операции выполняется вычисление
             when (operation) {
                 Operation.ADD -> first.add(second, MATH_CONTEXT)
                 Operation.SUBTRACT -> first.subtract(second, MATH_CONTEXT)
@@ -44,12 +48,11 @@ class CalculatorUseCase {
     }
 
     /**
-     * Вычисляет процент как в стандартном Android калькуляторе:
-     * - 100 + 10% = 100 + (100 × 0.10) = 110
-     * - 100 - 10% = 100 - (100 × 0.10) = 90  
-     * - 100 × 10% = 100 × 0.10 = 10
-     * - 100 ÷ 10% = 100 ÷ 0.10 = 1000
-     * - 50% (без операции) = 0.50
+     * Вычисляет значение процента в зависимости от контекста операции.
+     * Реализует логику стандартного калькулятора:
+     * - "Число + 10%" -> Число + (10% от Числа)
+     * - "Число * 10%" -> Число * 0.1
+     * Если операции нет, просто превращает проценты в десятичную дробь (50% -> 0.5).
      */
     fun calculatePercentage(
         base: BigDecimal,
@@ -60,36 +63,39 @@ class CalculatorUseCase {
         
         return when (operation) {
             Operation.ADD, Operation.SUBTRACT -> {
-                // Для + и - процент вычисляется от базы
+                // Для + и - вычисляем реальное значение процента от базового числа
                 base.multiply(percentValue, MATH_CONTEXT)
             }
             Operation.MULTIPLY, Operation.DIVIDE -> {
-                // Для × и ÷ просто переводим в десятичную дробь
+                // Для умножения и деления просто используем коэффициент (например 0.1 для 10%)
                 percentValue
             }
             null -> {
-                // Без операции - просто переводим в десятичную дробь
+                // Если нет операции, возвращаем просто долю
                 percentValue
             }
         }
     }
 
     /**
-     * Форматирует результат для отображения
+     * Форматирует число BigDecimal в строку для красивого отображения на дисплее.
+     * - Удаляет лишние нули в конце (например, 12.500 -> 12.5).
+     * - Если число слишком длинное (> 15 цифр), конвертирует в научный формат (например, 1.23E+10).
+     * - Если число целое, убирает десятичную точку.
      */
     fun formatResult(value: BigDecimal): String {
         // Убираем лишние нули
         val stripped = value.stripTrailingZeros()
         
-        // Проверяем, помещается ли число в дисплей
+        // Проверяем, помещается ли число в дисплей обычной строкой
         val plainString = stripped.toPlainString()
         
         return if (plainString.length > MAX_DISPLAY_DIGITS) {
-            // Используем экспоненциальную нотацию для очень больших/маленьких чисел
+            // Если слишком длинное, используем инженерную нотацию с округлением
             val formatted = stripped.round(MathContext(MAX_DISPLAY_DIGITS - 5))
             formatted.toEngineeringString()
         } else {
-            // Проверяем на целое число
+            // Если помещается, проверяем нужно ли показывать точку
             if (stripped.scale() <= 0) {
                 stripped.toBigInteger().toString()
             } else {
@@ -99,7 +105,9 @@ class CalculatorUseCase {
     }
 
     /**
-     * Парсит строку в BigDecimal
+     * Преобразует (парсит) строку с экрана обратно в число BigDecimal для вычислений.
+     * Обрабатывает пустые строки или одиночные знаки минуса как 0.
+     * Используется перед выполнением математических операций.
      */
     fun parseInput(input: String): BigDecimal {
         return try {

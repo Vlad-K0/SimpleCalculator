@@ -13,10 +13,19 @@ import com.example.simplecalculator.presentation.CalculatorViewModel
 import com.example.simplecalculator.screen.CalculatorScreen
 import com.example.simplecalculator.ui.theme.SimpleCalculatorTheme
 
+/**
+ * Точка входа в приложение.
+ * Наследуется от ComponentActivity для поддержки Jetpack Compose.
+ */
 class MainActivity : ComponentActivity() {
 
+    // Инициализация ViewModel через делегат viewModels()
     private val viewModel: CalculatorViewModel by viewModels()
 
+    /**
+     * Основной метод жизненного цикла Activity.
+     * Здесь настраивается контент экрана (UI).
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

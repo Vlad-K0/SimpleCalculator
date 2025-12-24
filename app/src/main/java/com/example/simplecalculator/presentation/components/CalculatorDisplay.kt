@@ -16,7 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Дисплей калькулятора с выражением и результатом
+ * Экран дисплея калькулятора.
+ * Отображает текущее введенное число или результат.
+ * 
+ * @param displayValue Основной текст для отображения (число).
+ * @param expression Текст выражения (сейчас не используется, передается пустой строкой).
+ * @param modifier Модификатор контейнера.
  */
 @Composable
 fun CalculatorDisplay(
@@ -59,7 +64,11 @@ fun CalculatorDisplay(
 }
 
 /**
- * Вычисление размера шрифта в зависимости от длины текста
+ * Вычисление динамического размера шрифта в зависимости от длины текста.
+ * Позволяет уменьшать шрифт для длинных чисел, чтобы они помещались на экране.
+ * 
+ * @param text Текст для отображения.
+ * @return Размер шрифта (TextUnit).
  */
 private fun calculateFontSize(text: String): androidx.compose.ui.unit.TextUnit {
     return when {

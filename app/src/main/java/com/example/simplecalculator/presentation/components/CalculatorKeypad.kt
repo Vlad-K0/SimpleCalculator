@@ -3,21 +3,27 @@ package com.example.simplecalculator.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.simplecalculator.domain.model.Operation
-import com.example.simplecalculator.presentation.components.CalculatorButton
-import com.example.simplecalculator.presentation.components.CalculatorButtonType
 
 /**
- * Клавиатура калькулятора с сеткой кнопок
+ * Композер клавиатуры калькулятора.
+ * Располагает кнопки в сетке 5x4.
+ * Использует [Column] и [Row] с весами (weight) для равномерного заполнения пространства.
+ *
+ * @param onNumberClick Коллбек нажатия на цифру.
+ * @param onOperationClick Коллбек нажатия на операцию.
+ * @param onEqualsClick Коллбек нажатия на "=".
+ * @param onClearClick Коллбек нажатия на "AC".
+ * @param onDeleteClick Коллбек для удаления (не используется в UI по умолчанию, но поддерживается VM).
+ * @param onDecimalClick Коллбек нажатия на точку.
+ * @param onPercentClick Коллбек нажатия на %.
+ * @param onNegateClick Коллбек нажатия на +/-.
  */
 @Composable
 fun CalculatorKeypad(

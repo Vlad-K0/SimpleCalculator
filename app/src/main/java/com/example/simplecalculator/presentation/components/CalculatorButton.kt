@@ -2,9 +2,7 @@ package com.example.simplecalculator.presentation.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -21,25 +19,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Типы кнопок калькулятора
+ * Типы кнопок калькулятора (влияют на цветовое оформление)
  */
 enum class CalculatorButtonType {
-    NUMBER,      // Цифры (0-9)
-    OPERATION,   // Операции (+, -, ×, ÷)
-    FUNCTION,    // Функции (AC, ±, %)
-    EQUALS       // Равно (=)
+    /** Цифровые кнопки (0-9, точка) - темно-серые */
+    NUMBER,
+    /** Основные операции (+, -, *, /) - оранжевые/акцентные */
+    OPERATION,
+    /** Функциональные кнопки (AC, +/-, %) - светло-серые */
+    FUNCTION,
+    /** Кнопка равно (=) - выделенная цветом */
+    EQUALS
 }
 
 /**
- * Кнопка калькулятора с Material 3 стилями
+ * Стандартная круглая кнопка калькулятора.
+ * 
+ * @param symbol Текст на кнопке (число или символ операции).
+ * @param type Тип кнопки для определения цвета.
+ * @param onClick Обработчик нажатия.
+ * @param modifier Модификатор для настройки размера и отступов.
  */
 @Composable
 fun CalculatorButton(
     symbol: String,
     type: CalculatorButtonType,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    // aspectRatio удален, так как размеры контролируются родителем
+    modifier: Modifier = Modifier
 ) {
     val containerColor: Color
     val contentColor: Color
@@ -82,7 +88,13 @@ fun CalculatorButton(
 }
 
 /**
- * Кнопка калькулятора с заполнением (для двойной ширины)
+ * Широкая кнопка калькулятора (обычно для "0").
+ * Занимает место двух обычных кнопок. Выравнивание текста по левому краю.
+ *
+ * @param symbol Текст на кнопке ("0").
+ * @param type Тип кнопки (обычно NUMBER).
+ * @param onClick Обработчик нажатия.
+ * @param modifier Модификатор (должен использовать weight(2f) в родителе).
  */
 @Composable
 fun CalculatorWideButton(
